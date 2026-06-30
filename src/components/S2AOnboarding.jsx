@@ -7,8 +7,8 @@ import {
   Target, AlertTriangle, Package, ShoppingCart,
   Palette, Zap, CheckCircle2, ChevronRight,
   MessageCircle, ArrowLeft, RotateCcw, ExternalLink,
-  Check, ShieldCheck, Gauge, Puzzle, Building2,
-  GitBranch, Sparkles, LifeBuoy
+  Building2, GitBranch, Sparkles, LifeBuoy, HelpCircle,
+  ShieldCheck, Gauge, Puzzle
 } from "lucide-react";
 
 // ─── PLAN DATA (unchanged) ─────────────────────────────────────────────────
@@ -51,43 +51,46 @@ const PLANS = {
   },
 };
 
-// ─── FLAG → PLAN MAPPING ────────────────────────────────────────────────────
-// DEV + NON  → autonomous developer  → Launch / Growth
-// DIY + FIR  → guided developer      → Growth (middle ground)
-// MNG + ALL  → fully managed         → Managed
-function getPlanByFlags(level) {
+// ─── FLAG LEVEL → PLAN MAPPING ──────────────────────────────────────────────
+function getLevelPlan(level) {
   if (level === "DEV") {
     return {
       rec: PLANS.growthYear,
-      recReason: "As an experienced developer, you can manage builds, updates and store submissions on your own. Growth Yearly gives you the most flexibility for frequent iterations.",
+      recReason: "Developer level (DEV): autonomous setup, full control. Best for experienced developers.",
       alts: [
-        { plan: PLANS.launchYear, reason: "If you're shipping a single app without frequent updates, Launch Yearly is more cost-effective." },
-        { plan: PLANS.growth,     reason: "Prefer monthly flexibility without an annual commitment? Growth monthly gives you 3 builds/month." },
-        { plan: PLANS.launch,     reason: "The most affordable monthly option — great for getting started and evaluating at your own pace." },
+        { plan: PLANS.launchYear, reason: "Shipping a single app without frequent updates? Launch Yearly is more cost-effective." },
+        { plan: PLANS.growth,     reason: "Prefer monthly billing without an annual commitment? Growth monthly gives you 3 builds/month." },
+        { plan: PLANS.launch,     reason: "The most affordable monthly option — great for getting started." },
       ],
     };
   }
   if (level === "DIY") {
     return {
       rec: PLANS.growthYear,
-      recReason: "You're a developer who may need some guidance along the way — Growth Yearly gives you room to iterate while our team provides documentation and support during setup.",
+      recReason: "DIY level: guided setup with documentation and support during the process.",
       alts: [
         { plan: PLANS.launchYear,        reason: "Launching a single app? Launch Yearly covers the essentials at a lower cost." },
         { plan: PLANS.growth,            reason: "Want monthly flexibility instead of an annual plan? Growth monthly works the same way." },
-        { plan: PLANS.managedLaunchYear, reason: "If you'd rather have the team handle setup end-to-end, Managed Yearly removes the technical overhead entirely." },
+        { plan: PLANS.managedLaunchYear, reason: "Would rather have the team handle setup end-to-end? Managed Yearly removes the technical overhead entirely." },
       ],
     };
   }
   // MNG
   return {
     rec: PLANS.managedLaunchYear,
-    recReason: "You'd like full assistance with store setup, app configuration and build uploads — Managed Yearly gives you complete end-to-end support at the best monthly cost.",
+    recReason: "Managed level: full assistance with store setup, app configuration, and build uploads.",
     alts: [
-      { plan: PLANS.managedLaunch, reason: "Prefer not to commit annually? Managed Launch offers the same full support on a monthly basis, at a higher monthly cost." },
+      { plan: PLANS.managedLaunch, reason: "Prefer not to commit annually? Managed Launch offers the same full support on a monthly basis." },
       { plan: PLANS.growthYear,    reason: "Want more autonomy and a lower price? Growth Yearly works if you're comfortable handling setup yourself." },
     ],
   };
 }
+
+const SETUP_COPY = {
+  NON: { title: "Setup: fully independent", body: "You proceed independently with full control over the technical setup." },
+  FIR: { title: "Setup: Firebase included",  body: "We can set up Firebase for you, so you can focus on the rest of the configuration." },
+  ALL: { title: "Setup: fully managed",       body: "We can help you set up everything — stores, app configuration, and build uploads." },
+};
 
 // ─── INSIGHT PANEL ────────────────────────────────────────────────────────────
 function InsightPanel({ insight }) {
@@ -106,33 +109,13 @@ function InsightPanel({ insight }) {
   );
 }
 
-// ─── PROGRESS BAR ─────────────────────────────────────────────────────────────
-function ProgressBar({ current, total }) {
-  return (
-    <div className="s2a-mb-28">
-      <div className="s2a-progress">
-        {Array.from({ length: total }).map((_, i) => (
-          <div key={i} className={`s2a-progress__seg${i < current ? " s2a-progress__seg--active" : ""}`} />
-        ))}
-      </div>
-      <p className="s2a-progress__label">Step {current} of {total}</p>
-    </div>
-  );
-}
-
-// ─── OPTION BUTTON ────────────────────────────────────────────────────────────
-function OptionBtn({ opt, selected, onClick }) {
+// ─── OPTION BUTTON (direct-navigation style) ───────────────────────────────────
+function OptionBtn({ opt, onClick }) {
   const Icon = opt.icon;
   return (
-    <button className={`s2a-opt${selected ? " s2a-opt--selected" : ""}`} onClick={() => onClick(opt.v)}>
-      <span className="s2a-opt__dot">
-        {selected && (
-          <svg width="10" height="10" viewBox="0 0 10 10">
-            <path d="M2 5l2.5 2.5L8 3" stroke="#fff" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )}
-      </span>
-      <Icon size={18} strokeWidth={1.75} style={{ flexShrink: 0, color: selected ? "#29abe2" : "#7a7a8a" }} />
+    <button className="s2a-opt" onClick={() => onClick(opt)}>
+      <span className="s2a-opt__dot" />
+      <Icon size={18} strokeWidth={1.75} style={{ flexShrink: 0, color: "#7a7a8a" }} />
       <span>{opt.l}</span>
     </button>
   );
@@ -214,7 +197,7 @@ function AltCard({ plan, reason }) {
   );
 }
 
-// ─── SALES CONTACT (generic "talk to our team") ───────────────────────────────
+// ─── SALES CONTACT ────────────────────────────────────────────────────────────
 function SalesContact({ icon: Icon, title, body, extras }) {
   return (
     <div className="s2a-text-center">
@@ -242,7 +225,6 @@ function SalesContact({ icon: Icon, title, body, extras }) {
   );
 }
 
-// ─── CHAT BUTTON ──────────────────────────────────────────────────────────────
 function ChatBtn() {
   return (
     <a href="https://woo2app.unlisted.mgsq.it/#contact" target="_blank" rel="noreferrer" className="s2a-chat-btn">
@@ -252,8 +234,16 @@ function ChatBtn() {
   );
 }
 
-// ─── INSIGHT CONTENT (shared text blocks) ──────────────────────────────────────
-const REQUIREMENTS_INSIGHT = {
+// ─── SHARED INSIGHT TEXT ────────────────────────────────────────────────────────
+const DEV_ACCOUNTS_INSIGHT = {
+  title: "Developer accounts checklist",
+  body:
+    "Apple App Store: you'll need an active Apple Developer Program membership. If publishing as a company, Apple requires a valid D-U-N-S® Number and a registered legal entity.\n\n" +
+    "Google Play Store: you'll need an active Google Play Console developer account.",
+  link: { label: "Apple Developer Program details →", url: "https://developer.apple.com/programs/" },
+};
+
+const ELIGIBILITY_INSIGHT = {
   title: "Eligibility requirements",
   body:
     "To publish on the Apple App Store and Google Play Store you'll need:\n\n" +
@@ -261,7 +251,6 @@ const REQUIREMENTS_INSIGHT = {
     "• A Google Play Console developer account\n" +
     "• For Apple organizations: a registered legal entity and a D-U-N-S® Number\n" +
     "• A valid business identity (e.g. VAT number or equivalent registration)",
-  link: { label: "Apple Developer Program details →", url: "https://developer.apple.com/programs/" },
 };
 
 const LEVEL_INSIGHT = {
@@ -269,20 +258,27 @@ const LEVEL_INSIGHT = {
   body: "Developer (DEV): full autonomy, you handle everything yourself — tutorials available.\n\nGuided (DIY): you're technical, but we provide documentation and support along the way.\n\nManaged (MNG): we handle store setup, app configuration and build uploads end-to-end.",
 };
 
+// Reusable "level" options — used in 1.1.1, 1.1.2, 1.2.1, 1.3.1
+function levelOptions(setFlags, goNext) {
+  return [
+    { v: "DEV", l: "I'm an experienced developer — I can proceed with the setup independently", icon: Laptop,
+      action: () => { setFlags({ level: "DEV", setup: "NON" }); goNext("q2_ecommerce"); } },
+    { v: "DIY", l: "I'm a developer, but I may need some guidance along the way", icon: Handshake,
+      action: () => { setFlags({ level: "DIY", setup: "FIR" }); goNext("q2_ecommerce"); } },
+    { v: "MNG", l: "I need help setting up the stores and apps and uploading the builds", icon: LifeBuoy,
+      action: () => { setFlags({ level: "MNG", setup: "ALL" }); goNext("q2_ecommerce"); } },
+  ];
+}
+
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 export default function S2AOnboarding() {
   const [screen, setScreen] = useState("landing");
-  // screen values:
-  // landing, q_has_app, q_app_action, q_setup_own_existing, q_eligible_new,
-  // q_eligible_check, q_level, q_ecommerce, q_platform,
-  // result, sales_update_app, sales_not_eligible, sales_platform
+  const [history, setHistory] = useState([]);
+  const [flags, setFlagsState] = useState({ level: null, setup: null, store: null });
 
-  const [history, setHistory] = useState([]); // for back navigation
-  const [level, setLevel] = useState(null);   // DEV / DIY / MNG
-  const [storeFlag, setStoreFlag] = useState(null); // WOO / LWW (informational)
-  const [hasApp, setHasApp] = useState(null);
+  const setFlags = (partial) => setFlagsState(f => ({ ...f, ...partial }));
 
-  const go = (next) => {
+  const goNext = (next) => {
     setHistory(h => [...h, screen]);
     setScreen(next);
   };
@@ -299,88 +295,111 @@ export default function S2AOnboarding() {
 
   const restart = () => {
     setHistory([]);
-    setLevel(null);
-    setStoreFlag(null);
-    setHasApp(null);
+    setFlagsState({ level: null, setup: null, store: null });
     setScreen("landing");
   };
 
-  // ── Step config: question screens ────────────────────────────────────────
+  // ── SCREEN DEFINITIONS, following document numbering ──────────────────────
+
   const SCREENS = {
-    q_has_app: {
-      label: "Existing app",
+
+    // 1. Root question
+    q1_has_app: {
+      label: "1 · Existing app",
       question: "Do you already have a shopping app published on the app stores you're targeting?",
       insight: {
         title: "Why we ask",
-        body: "By \"app stores\" we mean the Apple App Store and Google Play Store. If you've already published on one or both, we can move straight to the next step.",
+        body: "By \"app stores\" we mean the Google Play Store for Android and the Apple App Store for iPhone and iPad. If you've already published on one or both, select Yes.",
       },
       opts: [
-        { v: "yes", l: "Yes, I already have a published app", icon: CheckCircle2,
-          next: () => { setHasApp(true); go("q_app_action"); } },
-        { v: "no", l: "No, not yet", icon: Plus,
-          next: () => { setHasApp(false); go("q_eligible_check"); } },
+        { v: "yes", l: "Yes, my app is already published", icon: CheckCircle2,
+          action: () => goNext("q1_1_app_action") },
+        { v: "new_accounts", l: "I want to create new developer accounts", icon: Plus,
+          action: () => { setFlags({ setup: "ALL" }); goNext("q1_2_eligible"); } },
+        { v: "no", l: "No, not yet", icon: HelpCircle,
+          action: () => { setFlags({ setup: "ALL" }); goNext("q1_3_eligible"); } },
       ],
     },
 
-    q_app_action: {
-      label: "App setup",
-      question: "Would you like to create a new app or update an existing one?",
-      insight: REQUIREMENTS_INSIGHT,
+    // 1.1 → Yes: dev accounts reminder, then new vs update vs fresh accounts
+    q1_1_app_action: {
+      label: "1.1 · App setup",
+      question: "Great! Since you already have an app published, make sure your developer accounts are fully configured. Would you like to create a new app or update an existing one?",
+      insight: DEV_ACCOUNTS_INSIGHT,
       opts: [
-        { v: "new", l: "Create a new app", icon: Sparkles,
-          next: () => go("q_level") },
-        { v: "update", l: "Update an existing app on the stores", icon: RefreshCw,
-          next: () => go("q_setup_own_existing") },
-        { v: "fresh", l: "I have existing accounts, but want new ones", icon: Plus,
-          next: () => go("q_eligible_check") },
+        { v: "create", l: "Create a new app — this is my first one with Store2App", icon: Sparkles,
+          action: () => goNext("q1_1_1_level") },
+        { v: "update", l: "Update an existing app to replace it with a Store2App version", icon: RefreshCw,
+          action: () => goNext("q1_1_2_level") },
+        { v: "fresh", l: "I have existing accounts, but want to create new ones instead", icon: Plus,
+          action: () => { setFlags({ setup: "ALL" }); goNext("q1_2_eligible"); } },
       ],
     },
 
-    q_setup_own_existing: {
-      label: "Migration support",
-      question: "You'll need to contact our support team to manage the transition and manually configure the app IDs — but we can still proceed. Do you think you can handle the rest of the setup on your own?",
+    // 1.1.1 Create new app → level questions
+    q1_1_1_level: {
+      label: "1.1.1 · Your profile",
+      question: "Perfect, let's move to the next step. Do you think you can handle the setup on your own?",
+      insight: LEVEL_INSIGHT,
+      opts: levelOptions(setFlags, goNext),
+    },
+
+    // 1.1.2 Update existing app → support note + level questions
+    q1_1_2_level: {
+      label: "1.1.2 · Migration support",
+      question: "You will need to contact our support team to manage the transition and manually configure the app IDs, but we can still proceed. Do you think you can handle the setup on your own?",
       insight: {
         title: "Heads up",
-        body: "Updating an existing app requires our support team to configure the app IDs manually before launch. This doesn't block your plan choice — let's find the right support level for you.",
+        body: "Updating an existing app requires our support team to configure the app IDs manually before launch. This doesn't block your plan choice.",
       },
+      opts: levelOptions(setFlags, goNext),
+    },
+
+    // 1.2 → "I want new accounts": eligibility check
+    q1_2_eligible: {
+      label: "1.2 · Eligibility",
+      question: "No problem. We just need to verify that you are eligible to publish on the app stores according to current policies.",
+      insight: ELIGIBILITY_INSIGHT,
       opts: [
-        { v: "DEV", l: "I'm an experienced developer — I'll handle it independently", icon: Laptop,
-          next: () => { setLevel("DEV"); go("q_ecommerce"); } },
-        { v: "DIY", l: "I'm a developer, but may need some guidance", icon: Handshake,
-          next: () => { setLevel("DIY"); go("q_ecommerce"); } },
-        { v: "MNG", l: "I need help with stores, apps and build uploads", icon: LifeBuoy,
-          next: () => { setLevel("MNG"); go("q_ecommerce"); } },
+        { v: "yes", l: "I fall into this category — I meet these requirements", icon: CheckCircle2,
+          action: () => goNext("q1_2_1_level") },
+        { v: "no", l: "Not applicable — I don't meet these requirements", icon: Building2,
+          action: () => goNext("sales_not_eligible") },
       ],
     },
 
-    q_eligible_check: {
-      label: "Eligibility",
-      question: "No problem — we just need to verify you're eligible to publish on the app stores under current policies.",
-      insight: REQUIREMENTS_INSIGHT,
-      opts: [
-        { v: "yes", l: "I meet these requirements", icon: CheckCircle2,
-          next: () => go("q_level") },
-        { v: "no", l: "I'm not sure / I don't meet these requirements", icon: Building2,
-          next: () => go("sales_not_eligible") },
-      ],
-    },
-
-    q_level: {
-      label: "Your profile",
-      question: "Do you think you can handle the technical setup on your own?",
+    // 1.2.1 Eligible (from 1.2) → level questions
+    q1_2_1_level: {
+      label: "1.2.1 · Your profile",
+      question: "You're almost there — configuring the app itself is simple, but setting up app store accounts and submissions can be more complex. Do you think you can handle the setup on your own?",
       insight: LEVEL_INSIGHT,
+      opts: levelOptions(setFlags, goNext),
+    },
+
+    // 1.3 → "No": eligibility check
+    q1_3_eligible: {
+      label: "1.3 · Eligibility",
+      question: "No problem — we just need to verify that you are eligible to publish on the app stores according to current policies.",
+      insight: ELIGIBILITY_INSIGHT,
       opts: [
-        { v: "DEV", l: "I'm an experienced developer — I'll handle it independently", icon: Laptop,
-          next: () => { setLevel("DEV"); go("q_ecommerce"); } },
-        { v: "DIY", l: "I'm a developer, but may need some guidance along the way", icon: Handshake,
-          next: () => { setLevel("DIY"); go("q_ecommerce"); } },
-        { v: "MNG", l: "I need help with stores, apps and build uploads", icon: LifeBuoy,
-          next: () => { setLevel("MNG"); go("q_ecommerce"); } },
+        { v: "yes", l: "I fall into this category — I meet these requirements", icon: CheckCircle2,
+          action: () => goNext("q1_3_1_level") },
+        { v: "no", l: "Not applicable — I don't meet these requirements", icon: Building2,
+          action: () => goNext("sales_not_eligible") },
       ],
     },
 
-    q_ecommerce: {
-      label: "E-commerce platform",
+    // 1.3.1 Eligible (from 1.3) → level questions
+    q1_3_1_level: {
+      label: "1.3.1 · Your profile",
+      question: "You're almost there — configuring the app itself is simple, but setting up app store accounts and submissions can be more complex. Do you think you can handle the setup on your own?",
+      insight: LEVEL_INSIGHT,
+      opts: levelOptions(setFlags, goNext),
+    },
+
+    // 2. E-commerce question (always reached after FLAG_LEVEL is set)
+    q2_ecommerce: {
+      label: "2 · E-commerce platform",
       question: "Do you already have an e-commerce website?",
       insight: {
         title: "About our plugin",
@@ -388,83 +407,141 @@ export default function S2AOnboarding() {
       },
       opts: [
         { v: "yes", l: "Yes, I have an e-commerce site", icon: ShoppingCart,
-          next: () => go("q_platform") },
+          action: () => goNext("q2_1_platform") },
         { v: "no", l: "No, not yet", icon: Plus,
-          next: () => go("q_platform_none") },
+          action: () => goNext("q2_2_none") },
       ],
     },
 
-    q_platform: {
-      label: "Current platform",
-      question: "Which platform are you currently using?",
+    // 2.1 Yes → which platform
+    q2_1_platform: {
+      label: "2.1 · Current platform",
+      question: "Great — our plugin is designed to work primarily with WooCommerce. Which platform are you currently using?",
       insight: {
         title: "Platform compatibility",
-        body: "WooCommerce is fully supported out of the box. PrestaShop and Shopify can be integrated. Magento and other platforms require a custom evaluation from our sales team.",
+        body: "WooCommerce is fully supported out of the box (2.1.1). PrestaShop (2.1.2) and Shopify (2.1.3) can be integrated. Magento (2.1.4) and other platforms (2.1.5) require a custom evaluation from our sales team.",
       },
       opts: [
         { v: "woo", l: "WooCommerce", icon: CheckCircle2,
-          next: () => { setStoreFlag("WOO"); go("result"); } },
+          action: () => { setFlags({ store: "WOO" }); goNext("result"); } },
         { v: "presta", l: "PrestaShop", icon: Puzzle,
-          next: () => go("q_platform_action_presta") },
+          action: () => goNext("q2_1_2_presta") },
         { v: "shopify", l: "Shopify", icon: Puzzle,
-          next: () => go("q_platform_action_shopify") },
+          action: () => goNext("q2_1_3_shopify") },
         { v: "magento", l: "Magento", icon: AlertTriangle,
-          next: () => go("sales_platform") },
+          action: () => goNext("sales_magento") },
         { v: "other", l: "Other platform", icon: ClipboardList,
-          next: () => go("sales_platform") },
+          action: () => goNext("sales_other") },
       ],
     },
 
-    q_platform_action_presta: {
-      label: "PrestaShop",
-      question: "How would you like to proceed with your PrestaShop catalog?",
+    // 2.1.2 PrestaShop sub-options
+    q2_1_2_presta: {
+      label: "2.1.2 · PrestaShop",
+      question: "Ok, we can work with it. How would you like to proceed?",
       insight: {
         title: "Your options",
-        body: "We can migrate your catalog to WooCommerce, keep it synchronized, or set up a lightweight WooCommerce backend just for the app — free if used purely as a backend, from €10/month if used as a full storefront.",
+        body: "We can migrate your catalog to WooCommerce, keep it synchronized, or set up a lightweight WooCommerce backend just for the app — free as a backend, from €10/month as a full storefront.",
       },
       opts: [
-        { v: "migrate", l: "Migrate to WooCommerce", icon: RefreshCw, next: () => go("sales_platform") },
-        { v: "sync", l: "Synchronize with WooCommerce", icon: GitBranch, next: () => go("sales_platform") },
-        { v: "lww", l: "WooCommerce backend just for the app catalog", icon: Store,
-          next: () => { setStoreFlag("LWW"); go("result"); } },
-        { v: "diy", l: "I'll set up WooCommerce myself", icon: Laptop,
-          next: () => { setStoreFlag("WOO"); go("result"); } },
-        { v: "unsure", l: "Not sure", icon: ClipboardList, next: () => go("sales_platform") },
+        { v: "migrate", l: "Interested in migrating to WooCommerce", icon: RefreshCw, action: () => goNext("sales_presta_migrate") },
+        { v: "sync", l: "Interested in synchronizing with WooCommerce", icon: GitBranch, action: () => goNext("sales_presta_sync") },
+        { v: "lww", l: "I'd like a WooCommerce backend just for the app catalog", icon: Store,
+          action: () => { setFlags({ store: "LWW" }); goNext("result"); } },
+        { v: "diy", l: "I will create a WooCommerce site myself", icon: Laptop,
+          action: () => { setFlags({ store: "WOO" }); goNext("result"); } },
+        { v: "unsure", l: "Not sure", icon: ClipboardList, action: () => goNext("sales_presta_unsure") },
       ],
     },
 
-    q_platform_action_shopify: {
-      label: "Shopify",
-      question: "How would you like to proceed with your Shopify catalog?",
+    // 2.1.3 Shopify sub-options
+    q2_1_3_shopify: {
+      label: "2.1.3 · Shopify",
+      question: "Ok, we can work with it. How would you like to proceed?",
       insight: {
         title: "Your options",
-        body: "We can migrate your catalog to WooCommerce, keep it synchronized, or set up a lightweight WooCommerce backend just for the app — free if used purely as a backend, from €10/month if used as a full storefront.",
+        body: "We can migrate your catalog to WooCommerce, keep it synchronized, or set up a lightweight WooCommerce backend just for the app — free as a backend, from €10/month as a full storefront.",
       },
       opts: [
-        { v: "migrate", l: "Migrate to WooCommerce", icon: RefreshCw, next: () => go("sales_platform") },
-        { v: "sync", l: "Synchronize with WooCommerce", icon: GitBranch, next: () => go("sales_platform") },
-        { v: "lww", l: "WooCommerce backend just for the app catalog", icon: Store,
-          next: () => { setStoreFlag("LWW"); go("result"); } },
-        { v: "diy", l: "I'll set up WooCommerce myself", icon: Laptop,
-          next: () => { setStoreFlag("WOO"); go("result"); } },
-        { v: "unsure", l: "Not sure", icon: ClipboardList, next: () => go("sales_platform") },
+        { v: "migrate", l: "Interested in migrating to WooCommerce", icon: RefreshCw, action: () => goNext("sales_shopify_migrate") },
+        { v: "sync", l: "Interested in synchronizing with WooCommerce", icon: GitBranch, action: () => goNext("sales_shopify_sync") },
+        { v: "lww", l: "I'd like a WooCommerce backend just for the app catalog", icon: Store,
+          action: () => { setFlags({ store: "LWW" }); goNext("result"); } },
+        { v: "diy", l: "I will create a WooCommerce site myself", icon: Laptop,
+          action: () => { setFlags({ store: "WOO" }); goNext("result"); } },
+        { v: "unsure", l: "Not sure", icon: ClipboardList, action: () => goNext("sales_shopify_unsure") },
       ],
     },
 
-    q_platform_none: {
-      label: "No website yet",
-      question: "Let's see your options for setting up the e-commerce backend.",
+    // 2.2 No e-commerce yet
+    q2_2_none: {
+      label: "2.2 · No website yet",
+      question: "Ok — let's explore your options.",
       insight: {
         title: "Your options",
         body: "We offer a lightweight WooCommerce solution designed as a complementary service to Store2App — free when used only as a backend catalog, or from €10/month as a full storefront.",
       },
       opts: [
-        { v: "lww", l: "WooCommerce backend just for the app catalog", icon: Store,
-          next: () => { setStoreFlag("LWW"); go("result"); } },
-        { v: "diy", l: "I'll set up WooCommerce myself", icon: Laptop,
-          next: () => { setStoreFlag("WOO"); go("result"); } },
-        { v: "unsure", l: "Not sure", icon: ClipboardList, next: () => go("sales_platform") },
+        { v: "lww", l: "I'd like a WooCommerce backend just for the app catalog", icon: Store,
+          action: () => { setFlags({ store: "LWW" }); goNext("result"); } },
+        { v: "diy", l: "I will create a WooCommerce site myself", icon: Laptop,
+          action: () => { setFlags({ store: "WOO" }); goNext("result"); } },
+        { v: "unsure", l: "Not sure", icon: ClipboardList, action: () => goNext("sales_none_unsure") },
       ],
+    },
+  };
+
+  // ── SALES SCREENS (all "contact our team" branches) ───────────────────────
+  const SALES_SCREENS = {
+    sales_not_eligible: {
+      icon: Building2,
+      title: "Let's find the best solution together",
+      body: "In this case, please contact our team — we'll help you understand what's needed to become eligible for app store publishing, including business registration and D-U-N-S® setup if required.",
+    },
+    sales_magento: {
+      icon: AlertTriangle,
+      title: "Let's evaluate your Magento setup",
+      body: "Please contact our sales team so we can evaluate the best solution for your Magento setup.",
+    },
+    sales_other: {
+      icon: ClipboardList,
+      title: "Tell us more about your platform",
+      body: "Please contact our sales team and share more details about your current platform so we can find the best integration path.",
+    },
+    sales_presta_migrate: {
+      icon: RefreshCw,
+      title: "Let's plan your migration",
+      body: "Please contact our sales team to plan migrating your PrestaShop catalog to WooCommerce.",
+    },
+    sales_presta_sync: {
+      icon: GitBranch,
+      title: "Let's plan your synchronization",
+      body: "Please contact our sales team to set up catalog synchronization between PrestaShop and WooCommerce.",
+    },
+    sales_presta_unsure: {
+      icon: ClipboardList,
+      title: "Let's figure it out together",
+      body: "No problem — contact our sales team and we'll help you choose the best path for your PrestaShop store.",
+    },
+    sales_shopify_migrate: {
+      icon: RefreshCw,
+      title: "Let's plan your migration",
+      body: "Please contact our sales team to plan migrating your Shopify catalog to WooCommerce.",
+    },
+    sales_shopify_sync: {
+      icon: GitBranch,
+      title: "Let's plan your synchronization",
+      body: "Please contact our sales team to set up catalog synchronization between Shopify and WooCommerce.",
+    },
+    sales_shopify_unsure: {
+      icon: ClipboardList,
+      title: "Let's figure it out together",
+      body: "No problem — contact our sales team and we'll help you choose the best path for your Shopify store.",
+    },
+    sales_none_unsure: {
+      icon: HelpCircle,
+      title: "Let's figure it out together",
+      body: "No problem — contact our sales team and we'll help you choose the best e-commerce setup for your app.",
     },
   };
 
@@ -506,7 +583,7 @@ export default function S2AOnboarding() {
         <button
           className="s2a-btn s2a-btn--primary s2a-btn--full"
           style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }}
-          onClick={() => go("q_has_app")}
+          onClick={() => goNext("q1_has_app")}
         >
           Find the right plan for you
           <ChevronRight size={18} strokeWidth={2.5} />
@@ -521,42 +598,26 @@ export default function S2AOnboarding() {
   );
 
   // ── SALES CONTACT SCREENS ────────────────────────────────────────────────────
-  if (screen === "sales_not_eligible") return (
-    <div className="s2a-onboarding">
-      <div className="s2a-wrap-wide">
-        <button className="s2a-btn s2a-btn--ghost s2a-mb-28" style={{ display: "inline-flex", alignItems: "center", gap: 6 }} onClick={restart}>
-          <RotateCcw size={14} strokeWidth={2} /> Start over
-        </button>
-        <SalesContact
-          icon={Building2}
-          title="Let's find the best solution together"
-          body="No problem — our team can help you understand what's needed to become eligible for app store publishing, including business registration and D-U-N-S® setup if required."
-        />
+  if (SALES_SCREENS[screen]) {
+    const s = SALES_SCREENS[screen];
+    return (
+      <div className="s2a-onboarding">
+        <div className="s2a-wrap-wide">
+          <button className="s2a-btn s2a-btn--ghost s2a-mb-28" style={{ display: "inline-flex", alignItems: "center", gap: 6 }} onClick={restart}>
+            <RotateCcw size={14} strokeWidth={2} /> Start over
+          </button>
+          <SalesContact icon={s.icon} title={s.title} body={s.body} />
+        </div>
+        <ChatBtn />
       </div>
-      <ChatBtn />
-    </div>
-  );
+    );
+  }
 
-  if (screen === "sales_platform") return (
-    <div className="s2a-onboarding">
-      <div className="s2a-wrap-wide">
-        <button className="s2a-btn s2a-btn--ghost s2a-mb-28" style={{ display: "inline-flex", alignItems: "center", gap: 6 }} onClick={restart}>
-          <RotateCcw size={14} strokeWidth={2} /> Start over
-        </button>
-        <SalesContact
-          icon={GitBranch}
-          title="Let's evaluate the best setup for you"
-          body="Your platform or migration request needs a closer look from our team to recommend the best integration path with Store2App."
-          extras={[[RefreshCw, "Catalog migration"], [GitBranch, "Catalog synchronization"], [Store, "Custom WooCommerce backend"]]}
-        />
-      </div>
-      <ChatBtn />
-    </div>
-  );
-
-  // ── RESULT ───────────────────────────────────────────────────────────────────
+  // ── RESULT (section 3 + section 4 combined) ──────────────────────────────────
   if (screen === "result") {
-    const { rec, recReason, alts } = getPlanByFlags(level);
+    const { rec, recReason, alts } = getLevelPlan(flags.level);
+    const setupInfo = SETUP_COPY[flags.setup] || SETUP_COPY.NON;
+
     return (
       <div className="s2a-onboarding">
         <div className="s2a-wrap-wide">
@@ -568,19 +629,15 @@ export default function S2AOnboarding() {
             <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 72, height: 72, borderRadius: "50%", background: "rgba(41,171,226,0.1)", marginBottom: 16 }}>
               <Target size={32} strokeWidth={1.5} style={{ color: "#29abe2" }} />
             </div>
-            <h2 style={{ fontSize: 24, fontWeight: 800, margin: "0 0 10px" }}>Here's the plan built for you</h2>
+            <h2 style={{ fontSize: 24, fontWeight: 800, margin: "0 0 10px" }}>
+              Perfect — let's get started. We've identified this option for you:
+            </h2>
             <p className="s2a-lead" style={{ maxWidth: 460, margin: "0 auto" }}>{recReason}</p>
 
-            {storeFlag === "LWW" && (
+            {flags.store === "LWW" && (
               <div className="s2a-info-box s2a-flex s2a-items-center s2a-gap-8" style={{ justifyContent: "center", marginTop: 14 }}>
                 <Store size={15} strokeWidth={2} style={{ flexShrink: 0 }} />
                 Your lightweight WooCommerce backend is free as a catalog-only setup, or from €10/month as a full storefront.
-              </div>
-            )}
-            {hasApp && (
-              <div className="s2a-info-box s2a-flex s2a-items-center s2a-gap-8" style={{ justifyContent: "center", marginTop: 10 }}>
-                <AlertTriangle size={15} strokeWidth={2} style={{ flexShrink: 0 }} />
-                Updating an existing app? Our support team will help configure the app IDs after signup.
               </div>
             )}
           </div>
@@ -588,19 +645,37 @@ export default function S2AOnboarding() {
           <PlanCard plan={rec} recommended />
 
           {alts.length > 0 && (
-            <div className="s2a-mt-24">
-              <p className="s2a-eyebrow s2a-mb-12">Other options</p>
+            <div className="s2a-mt-24 s2a-mb-24">
+              <p className="s2a-eyebrow s2a-mb-12">Would you like to see other available options?</p>
               {alts.map((a, i) => <AltCard key={i} plan={a.plan} reason={a.reason} />)}
             </div>
           )}
 
-          <div className="s2a-setup-box s2a-flex s2a-gap-12 s2a-mt-24">
+          {/* Section 4 — FLAG SETUP upsell, shown together with the plan */}
+          <div className="s2a-setup-box s2a-flex s2a-gap-12">
             <Package size={18} strokeWidth={1.75} style={{ color: "#29abe2", flexShrink: 0, marginTop: 2 }} />
             <div>
-              <p style={{ fontWeight: 700, fontSize: 13, margin: "0 0 6px" }}>Ready to proceed?</p>
-              <p className="s2a-text-sm" style={{ margin: 0 }}>
-                You can proceed directly with registration and payment, or get in touch with our sales team for more details before committing.
-              </p>
+              <p style={{ fontWeight: 700, fontSize: 13, margin: "0 0 6px" }}>{setupInfo.title}</p>
+              <p className="s2a-text-sm" style={{ margin: 0 }}>{setupInfo.body}</p>
+            </div>
+          </div>
+
+          {/* Section 5 — final CTA */}
+          <div className="s2a-card s2a-mt-24" style={{ textAlign: "center" }}>
+            <p style={{ fontWeight: 700, fontSize: 15, margin: "0 0 18px" }}>
+              Would you like to proceed with registration and payment, or be contacted by our sales team for more details?
+            </p>
+            <div className="s2a-flex s2a-gap-10 s2a-flex-wrap" style={{ justifyContent: "center" }}>
+              <a href="https://woo2app.unlisted.mgsq.it" target="_blank" rel="noreferrer"
+                className="s2a-btn s2a-btn--primary"
+                style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                Proceed with registration <ChevronRight size={16} strokeWidth={2.5} />
+              </a>
+              <a href="https://woo2app.unlisted.mgsq.it/#contact" target="_blank" rel="noreferrer"
+                className="s2a-btn"
+                style={{ border: "1.5px solid rgba(41,171,226,0.3)", color: "#29abe2", display: "inline-flex", alignItems: "center", gap: 6 }}>
+                Contact sales team
+              </a>
             </div>
           </div>
         </div>
@@ -627,7 +702,7 @@ export default function S2AOnboarding() {
 
             <div className="s2a-flex-col s2a-gap-10">
               {current.opts.map(opt => (
-                <OptionBtn key={opt.v} opt={opt} selected={false} onClick={() => opt.next()} />
+                <OptionBtn key={opt.v} opt={opt} onClick={() => opt.action()} />
               ))}
             </div>
           </div>
