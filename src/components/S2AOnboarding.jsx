@@ -167,10 +167,10 @@ function AltCard({ plan, reason }) {
       <div className="s2a-alt-card__header">
         <div>
           <span className="s2a-badge s2a-mb-4" style={{ color: plan.color }}>{plan.badge}</span>
-          <p style={{ fontWeight: 600, fontSize: 15, margin: "2px 0 0" }}>{plan.name}</p>
+          <p style={{ fontWeight: 600, fontSize: 16, margin: "2px 0 0" }}>{plan.name}</p>
         </div>
         <div className="s2a-flex s2a-items-center s2a-gap-12">
-          <span style={{ fontWeight: 700, color: "#7a7a8a", fontSize: 14 }}>€{displayPrice.toLocaleString("en-US")}/{plan.unit}</span>
+          <span style={{ fontWeight: 700, color: "#5a5a66", fontSize: 16 }}>€{displayPrice.toLocaleString("en-US")}/{plan.unit}</span>
           <Plus size={18} strokeWidth={2} style={{ color: "#29abe2", transform: open ? "rotate(45deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }} />
         </div>
       </div>
@@ -211,7 +211,7 @@ function SalesContact({ icon: Icon, title, body, extras }) {
           {extras.map(([I, t]) => (
             <div key={t} className="s2a-flex s2a-items-center s2a-gap-12 s2a-mb-12">
               <I size={18} strokeWidth={1.75} style={{ color: "#29abe2", flexShrink: 0 }} />
-              <span style={{ fontSize: 14 }}>{t}</span>
+              <span style={{ fontSize: 16 }}>{t}</span>
             </div>
           ))}
         </div>
@@ -419,7 +419,7 @@ export default function S2AOnboarding() {
       question: "Great — our plugin is designed to work primarily with WooCommerce. Which platform are you currently using?",
       insight: {
         title: "Platform compatibility",
-        body: "WooCommerce is fully supported out of the box. PrestaShop and Shopify can be integrated. Magento and other platforms require a custom evaluation from our sales team.",
+        body: "WooCommerce is fully supported out of the box (2.1.1). PrestaShop (2.1.2) and Shopify (2.1.3) can be integrated. Magento (2.1.4) and other platforms (2.1.5) require a custom evaluation from our sales team.",
       },
       opts: [
         { v: "woo", l: "WooCommerce", icon: CheckCircle2,
@@ -573,7 +573,7 @@ export default function S2AOnboarding() {
                 <Icon size={20} strokeWidth={1.75} style={{ color: "#29abe2" }} />
               </div>
               <div>
-                <p style={{ fontWeight: 700, fontSize: 14, margin: "0 0 4px", color: "#333" }}>{title}</p>
+                <p style={{ fontWeight: 700, fontSize: 16, margin: "0 0 4px", color: "#333" }}>{title}</p>
                 <p className="s2a-text-sm" style={{ margin: 0 }}>{desc}</p>
               </div>
             </div>
@@ -655,14 +655,14 @@ export default function S2AOnboarding() {
           <div className="s2a-setup-box s2a-flex s2a-gap-12">
             <Package size={18} strokeWidth={1.75} style={{ color: "#29abe2", flexShrink: 0, marginTop: 2 }} />
             <div>
-              <p style={{ fontWeight: 700, fontSize: 13, margin: "0 0 6px" }}>{setupInfo.title}</p>
+              <p style={{ fontWeight: 700, fontSize: 16, margin: "0 0 6px" }}>{setupInfo.title}</p>
               <p className="s2a-text-sm" style={{ margin: 0 }}>{setupInfo.body}</p>
             </div>
           </div>
 
           {/* Section 5 — final CTA */}
           <div className="s2a-card s2a-mt-24" style={{ textAlign: "center" }}>
-            <p style={{ fontWeight: 700, fontSize: 15, margin: "0 0 18px" }}>
+            <p style={{ fontWeight: 700, fontSize: 16, margin: "0 0 18px" }}>
               Would you like to proceed with registration and payment, or be contacted by our sales team for more details?
             </p>
             <div className="s2a-flex s2a-gap-10 s2a-flex-wrap" style={{ justifyContent: "center" }}>

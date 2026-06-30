@@ -752,3 +752,78 @@
 .s2a-opt:active {
   transform: scale(0.99);
 }
+
+/* ── READABILITY UPDATE — minimum 16px body text ────────────── */
+/* Option buttons, plan text, body copy bumped to 16px */
+.s2a-opt {
+  font-size: 16px;
+}
+
+.s2a-lead {
+  font-size: 16px;
+}
+
+.s2a-card p:not(.s2a-text-sm):not(.s2a-price):not(.s2a-price--striked):not(.s2a-price__unit) {
+  font-size: 16px;
+}
+
+.s2a-subtitle {
+  font-size: 22px; /* already above minimum, unchanged */
+}
+
+.s2a-features li {
+  font-size: 15px; /* feature lists stay slightly smaller, list context is fine */
+}
+
+.s2a-alt-card p:not(.s2a-text-sm) {
+  font-size: 16px;
+}
+
+/* Plan name/desc and general paragraph text */
+.s2a-card h3 {
+  font-size: 20px; /* unchanged, already large */
+}
+
+/* ── INSIGHT PANEL — darker text at 14-15px ─────────────────── */
+.s2a-text-sm {
+  font-size: 15px;
+  color: #4a4a55; /* darker than the previous --s2a-muted (#7a7a8a) for readability */
+}
+
+.s2a-insight .s2a-text-sm {
+  font-size: 15px;
+  color: #3d3d47;
+  line-height: 1.75;
+}
+
+.s2a-insight__link {
+  font-size: 14px;
+}
+
+/* ── READABILITY FIX v2 — covers inline-style gaps ──────────── */
+/* Some text in the component uses inline style={{fontSize}}, which
+   wins over external CSS. The values below were corrected directly
+   in the JSX (16px minimum body text). This block is a safety net
+   for anything still rendered via plain <p>/<span> with no inline size. */
+
+.s2a-onboarding p,
+.s2a-onboarding span:not(.s2a-badge):not(.s2a-price__unit) {
+  font-size: 16px;
+}
+
+.s2a-badge {
+  font-size: 11px; /* badges are intentionally small caps labels, not body text */
+}
+
+.s2a-price__unit {
+  font-size: 14px; /* "/month" unit next to a large price number, fine smaller */
+}
+
+/* Insight panel keeps the slightly smaller, darker treatment */
+.s2a-insight p,
+.s2a-insight span,
+.s2a-text-sm,
+.s2a-text-sm span {
+  font-size: 15px !important;
+  color: #3d3d47;
+}
