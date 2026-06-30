@@ -745,3 +745,10 @@
     padding: 14px 16px;
   }
 }
+
+/* ── DIRECT-ACTION OPTION (v5 — click navigates immediately) ─── */
+/* Options in the English flow act as instant navigation buttons,
+   so hover/active feedback matters more than persistent selection */
+.s2a-opt:active {
+  transform: scale(0.99);
+}
