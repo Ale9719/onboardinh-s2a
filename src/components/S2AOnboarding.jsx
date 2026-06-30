@@ -419,7 +419,7 @@ export default function S2AOnboarding() {
       question: "Great — our plugin is designed to work primarily with WooCommerce. Which platform are you currently using?",
       insight: {
         title: "Platform compatibility",
-        body: "WooCommerce is fully supported out of the box (2.1.1). PrestaShop (2.1.2) and Shopify (2.1.3) can be integrated. Magento (2.1.4) and other platforms (2.1.5) require a custom evaluation from our sales team.",
+        body: "WooCommerce is fully supported out of the box. PrestaShop and Shopify can be integrated. Magento and other platforms require a custom evaluation from our sales team.",
       },
       opts: [
         { v: "woo", l: "WooCommerce", icon: CheckCircle2,
